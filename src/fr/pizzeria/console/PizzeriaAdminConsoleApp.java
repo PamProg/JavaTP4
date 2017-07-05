@@ -2,6 +2,8 @@ package fr.pizzeria.console;
 
 import java.util.Scanner;
 
+import fr.pizzeria.model.Pizza;
+
 /**
  * Classe unique et principale du projet.
  * Outil de gestion d'une pizzeria.
@@ -12,13 +14,13 @@ import java.util.Scanner;
 public class PizzeriaAdminConsoleApp {
 
 	// Déclaration des variables
-	static String[][] pizzas;
+	static Pizza[] pizzas;
 	static Scanner input;
 	
 	public static void main(String[] args) {
 		
 		// Initialisations des variables/données
-		pizzas = new String[100][4];
+		pizzas = new Pizza[100];
 		initPizzas();
 		input = new Scanner(System.in);
 		int response = -1;
@@ -74,18 +76,15 @@ public class PizzeriaAdminConsoleApp {
 			
 			// Récupère l'indice de la pizza supprimée
 			for(int i=0 ; i<pizzas.length ; i++) {
-				if(pizzas[i][0] != null && pizzas[i][1].equals(codeChosen)) {
+				if(pizzas[i] != null && pizzas[i].getCode().equals(codeChosen)) {
 					indexPizzaDelete = i;
 				}
 			}
 			
 			// Permet de "tasser" le tableau après la suppression
 			for(int i=indexPizzaDelete ; i<pizzas.length ; i++) {
-				if(pizzas[i][0] != null) {
-					pizzas[i][0] = pizzas[i+1][0];
-					pizzas[i][1] = pizzas[i+1][1];
-					pizzas[i][2] = pizzas[i+1][2];
-					pizzas[i][3] = pizzas[i+1][3];
+				if(pizzas[i] != null) {
+					pizzas[i] = pizzas[i+1];
 				}
 			}
 		}
@@ -116,10 +115,10 @@ public class PizzeriaAdminConsoleApp {
 			prixString = input.next();
 			
 			for(int i=0 ; i<pizzas.length ; i++) {
-				if(pizzas[i][0] != null && pizzas[i][1].equals(codeChosen)) {
-					pizzas[i][1] = codeString;
-					pizzas[i][2] = nomString;
-					pizzas[i][3] = prixString;
+				if(pizzas[i] != null && pizzas[i].getCode().equals(codeChosen)) {
+					pizzas[i].setCode(codeString);
+					pizzas[i].setNom(nomString);
+					pizzas[i].setPrix(Double.parseDouble(prixString));
 				}
 			}
 		}
@@ -143,24 +142,23 @@ public class PizzeriaAdminConsoleApp {
 		
 		int nbPizzas = 0;
 		for(int i=0 ; i<pizzas.length ; i++) {
-			if(pizzas[i][0] != null) {
+			if(pizzas[i] != null) {
 				nbPizzas++;
 			}
 		}
 		
-		pizzas[nbPizzas] = new String[]{String.valueOf(nbPizzas),
-										codeString,
-										nomString,
-										prixString};
+		pizzas[nbPizzas] = new Pizza(nbPizzas, codeString, nomString, Double.parseDouble(prixString));
 	}
 
 	/**
 	 * Affiche toutes les pizzas
 	 */
 	private static void displayPizzas() {
-		for(String[] s : pizzas) {
-			if(s[0] != null) {
-				System.out.println(s[1] + " -> " + s[2] + " (" + s[3] + " €)");
+		for(Pizza p : pizzas) {
+			if(p != null) {
+				System.out.println(p.getCode() + " -> " 
+								 + p.getNom() + " (" 
+								 + p.getPrix() + " €)");
 			}
 		}
 	}
@@ -181,14 +179,14 @@ public class PizzeriaAdminConsoleApp {
 	 * Initialise les pizzas originelles
 	 */
 	private static void initPizzas() {
-		pizzas[0] = new String[]{"0", "PEP", "Pépéroni", "12.50"};
-		pizzas[1] = new String[]{"1", "MAR", "Margherita", "14.00"};
-		pizzas[2] = new String[]{"2", "REI", "LA Reine", "11.50"};
-		pizzas[3] = new String[]{"3", "FRO", "La 4 fromages", "12.00"};
-		pizzas[4] = new String[]{"4", "CAN", "La cannibale", "12.50"};
-		pizzas[5] = new String[]{"5", "SAV", "La savoyarde", "13.00"};
-		pizzas[6] = new String[]{"6", "ORI", "L'orientale", "13.50"};
-		pizzas[7] = new String[]{"7", "IND", "L'indienne", "14.00"};
+		pizzas[0] = new Pizza(0, "PEP", "Pépéroni", 12.50);
+		pizzas[1] = new Pizza(1, "MAR", "Margherita", 14.00);
+		pizzas[2] = new Pizza(2, "REI", "LA Reine", 11.50);
+		pizzas[3] = new Pizza(3, "FRO", "La 4 fromages", 12.00);
+		pizzas[4] = new Pizza(4, "CAN", "La cannibale", 12.50);
+		pizzas[5] = new Pizza(5, "SAV", "La savoyarde", 13.00);
+		pizzas[6] = new Pizza(6, "ORI", "L'orientale", 13.50);
+		pizzas[7] = new Pizza(7, "IND", "L'indienne", 14.00);
 	}
 
 }
